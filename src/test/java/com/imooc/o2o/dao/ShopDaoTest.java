@@ -20,7 +20,7 @@ public class ShopDaoTest extends BaseTest {
 
     @Test
     @Ignore
-    public void testInsertShopDao(){
+    public void testInsertShopDao() {
         Shop shop = new Shop();
         PersonInfo owner = new PersonInfo();
         Area area = new Area();
@@ -45,7 +45,7 @@ public class ShopDaoTest extends BaseTest {
 
     @Test
     @Ignore
-    public void testUpdateShopDao(){
+    public void testUpdateShopDao() {
         Shop shop = new Shop();
         shop.setShopId(36L);
         shop.setShopDesc("测试更新");
@@ -56,7 +56,7 @@ public class ShopDaoTest extends BaseTest {
     }
 
     @Test
-    public void testQueryByShopId(){
+    public void testQueryByShopId() {
         long shopId = 36;
         Shop shopTest = shopDao.queryByShopId(shopId);
         System.out.println(shopTest.getArea().getAreaName());
@@ -67,8 +67,8 @@ public class ShopDaoTest extends BaseTest {
     @Test
     public void testQueryShopListAndCount() {
         Shop shopCondition = new Shop();
-        PersonInfo owner= new PersonInfo();
-        owner.setUserId(1l);
+        PersonInfo owner = new PersonInfo();
+        owner.setUserId(1L);
         shopCondition.setOwner(owner);
         List<Shop> shopList = shopDao.queryShopList(shopCondition, 0, 5);
         System.out.println(shopList.size());
@@ -78,11 +78,8 @@ public class ShopDaoTest extends BaseTest {
         area.setAreaId(3);
         shopCondition.setArea(area);
         List<Shop> xinshopList = shopDao.queryShopList(shopCondition, 0, 2);
-        int xincount  = shopDao.queryShopCount(shopCondition);
+        int xincount = shopDao.queryShopCount(shopCondition);
         System.out.println("xin: " + xinshopList.size());
         System.out.println("xin: " + xincount);
-
-
     }
-
 }

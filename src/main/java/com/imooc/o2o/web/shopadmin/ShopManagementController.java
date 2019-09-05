@@ -1,6 +1,7 @@
 package com.imooc.o2o.web.shopadmin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.imooc.o2o.dto.ImageHolder;
 import com.imooc.o2o.dto.ShopExecution;
 import com.imooc.o2o.entity.Area;
 import com.imooc.o2o.entity.PersonInfo;
@@ -151,7 +152,7 @@ public class ShopManagementController {
         String shopStr = HttpServletRequestUtil.getString(request, "shopStr");
         // 将json数据转化为对象
         ObjectMapper mapper = new ObjectMapper();
-        Shop shop = null;
+        Shop shop;
         try {
             shop = mapper.readValue(shopStr, Shop.class);
         } catch (Exception e) {
@@ -161,7 +162,7 @@ public class ShopManagementController {
         }
 
         //spring 中文件上传
-        CommonsMultipartFile shopImg = null;
+        CommonsMultipartFile shopImg;
         //文件上传解析器，解析request中的文件, request.getSession().getServletContext()获取request会话中的内容。
         CommonsMultipartResolver commonsMultipartResolver = new CommonsMultipartResolver(
                 request.getSession().getServletContext());
@@ -180,13 +181,14 @@ public class ShopManagementController {
             shop.setOwner(owner);
             ShopExecution se;
             try {
-                se = shopService.addShop(shop, shopImg.getInputStream(), shopImg.getOriginalFilename());
+                ImageHolder imageHolder = new ImageHolder(shopImg.getOriginalFilename(), shopImg.getInputStream());
+                se = shopService.addShop(shop, imageHolder);
                 if (se.getState() == ShopStateEnum.CHECK.getState()) {
                     modelMap.put("success", true);
                     List<Shop> shopList;
                     shopList = (List<Shop>) request.getSession().getAttribute("shopList");
                     if (shopList == null || shopList.size() == 0) {
-                        shopList = new ArrayList<Shop>();
+                        shopList = new ArrayList<>();
                     }
                     shopList.add(se.getShop());
                     request.getSession().setAttribute("shopList", shopList);
@@ -244,9 +246,10 @@ public class ShopManagementController {
             ShopExecution se;
             try {
                 if (shopImg == null) {
-                    se = shopService.modifyShop(shop, null, null);
+                    se = shopService.modifyShop(shop, null);
                 } else {
-                    se = shopService.modifyShop(shop, shopImg.getInputStream(), shopImg.getOriginalFilename());
+                    ImageHolder imageHolder = new ImageHolder(shopImg.getOriginalFilename(), shopImg.getInputStream());
+                    se = shopService.modifyShop(shop, imageHolder);
                 }
                 if (se.getState() == ShopStateEnum.SUCCESS.getState()) {
                     modelMap.put("success", true);
