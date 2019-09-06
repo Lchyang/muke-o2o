@@ -12,21 +12,23 @@ import com.imooc.o2o.service.ProductService;
 import com.imooc.o2o.util.ImageUtil;
 import com.imooc.o2o.util.PathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Service
 public class ProductServiceImpl implements ProductService {
     private final ProductDao productDao;
+    private final ProductImgDao productImgDao;
 
     @Autowired
-    public ProductServiceImpl(ProductDao productDao) {
+    public ProductServiceImpl(ProductDao productDao, ProductImgDao productImgDao) {
         this.productDao = productDao;
+        this.productImgDao = productImgDao;
     }
 
-    @Autowired
-    private ProductImgDao productImgDao;
 
     /**
      * @param product         商品
@@ -34,7 +36,7 @@ public class ProductServiceImpl implements ProductService {
      * @param imageHolderList 展示图
      */
     @Override
-    public ProductExecution addProduct(Product product, ImageHolder image, List<ImageHolder> imageHolderList) {
+    public ProductExecution addProduct(Product product, ImageHolder image, List<ImageHolder> imageHolderList) throws ProductOperationException {
         //空值判断
         if (product != null && product.getShop() != null && product.getShop().getShopId() != null) {
             product.setCreateTime(new Date());

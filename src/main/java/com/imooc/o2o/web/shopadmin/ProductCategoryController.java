@@ -40,7 +40,7 @@ public class ProductCategoryController {
             return new Result<>(true, productCategoryList);
         } else {
             ProdcutCategoryStateEnum ps = ProdcutCategoryStateEnum.INNER_ERROR;
-            return new Result<>(false, ps.getStateInfo(), ps.hashCode());
+            return new Result<>(false, ps.getStateInfo(), ps.getState());
         }
     }
 
