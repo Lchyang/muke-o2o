@@ -13,6 +13,7 @@ import com.imooc.o2o.util.ImageUtil;
 import com.imooc.o2o.util.PathUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -60,6 +61,52 @@ public class ProductServiceImpl implements ProductService {
             return new ProductExecution(ProductStateEnum.SUCCESS, product);
         } else {
             return new ProductExecution(ProductStateEnum.EMPTY);
+        }
+    }
+
+    @Override
+    @Transactional
+    public ProductExecution updateProduct(Product product, ImageHolder image, List<ImageHolder> imageHolderList) throws
+            ProductOperationException {
+        if (product != null && product.getShop() != null && product.getShop().getShopId() != null) {
+            product.setLastEditTime(new Date());
+            if (image != null) {
+                Product productTemp = productDao.queryProductById(product.getProductId());
+                if (productTemp.getImgAddr() != null) {
+                    ImageUtil.deleteFileOrPath(productTemp.getImgAddr());
+                }
+                addImage(product, image);
+            }
+            try {
+                int effectNum = productDao.updateProduct(product);
+                if (effectNum < 0) {
+                    throw new ProductOperationException("编辑商品失败");
+                }
+            } catch (Exception e) {
+                throw new ProductOperationException("编辑商品失败" + e.toString());
+            }
+            if (imageHolderList != null && imageHolderList.size() > 0) {
+                deleteImgList(product.getProductId());
+                addProductImgList(product, imageHolderList);
+            }
+            return new ProductExecution(ProductStateEnum.SUCCESS, product);
+        } else {
+            return new ProductExecution(ProductStateEnum.EMPTY);
+        }
+    }
+
+    @Override
+    public Product getProductById(long productId) {
+        return productDao.queryProductById(productId);
+    }
+
+    private void deleteImgList(Long productId) {
+        List<ProductImg> imageList = productImgDao.queryProductImg(productId);
+        if (imageList.size() > 0) {
+            for (ProductImg productImg : imageList) {
+                ImageUtil.deleteFileOrPath(productImg.getImgAddr());
+            }
+            productImgDao.deleteProductImgByProductId(productId);
         }
     }
 

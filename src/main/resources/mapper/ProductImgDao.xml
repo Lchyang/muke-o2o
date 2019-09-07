@@ -19,4 +19,17 @@
             )
         </foreach>
     </insert>
+
+    <select id="queryProductImg" resultType="com.imooc.o2o.entity.ProductImg">
+        select product_img_id, img_addr, img_desc, priority, create_time, product_id
+        from tb_product_img
+        where product_id = #{productId}
+        order by product_img_id asc
+    </select>
+
+    <delete id="deleteProductImgByProductId">
+        delete
+        from tb_product_img
+        where product_id = #{productId}
+    </delete>
 </mapper>

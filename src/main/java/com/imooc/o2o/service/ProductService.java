@@ -9,4 +9,8 @@ import java.util.List;
 
 public interface ProductService {
     ProductExecution addProduct(Product product, ImageHolder image, List<ImageHolder> imageHolderList);
+
+    ProductExecution updateProduct(Product product, ImageHolder image, List<ImageHolder> imageHolderList);
+
+    Product getProductById(long productId);
 }
