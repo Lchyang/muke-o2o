@@ -16,4 +16,8 @@ public interface ProductDao {
     Product queryProductById(long productId);
 
     int deleteProudct(@Param("productId") long productId, @Param("shopId") long shopId);
+
+    int queryProductCount(@Param("productCondition") Product productCondition);
+
+    int updateProductCategoryIdToNull(long productId);
 }

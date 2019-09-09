@@ -13,4 +13,6 @@ public interface ProductService {
     ProductExecution updateProduct(Product product, ImageHolder image, List<ImageHolder> imageHolderList);
 
     Product getProductById(long productId);
+
+    ProductExecution getProductList(Product product, int pageIndex, int pageSize);
 }

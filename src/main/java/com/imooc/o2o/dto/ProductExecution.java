@@ -12,16 +12,19 @@ public class ProductExecution {
     private Product product;
     private List<Product> productList;
 
-    public ProductExecution(ProductStateEnum stateEnum){
+    public ProductExecution() {
+    }
+
+    public ProductExecution(ProductStateEnum stateEnum) {
         this.state = stateEnum.getState();
     }
 
-    public ProductExecution(ProductStateEnum stateEnum, Product product){
+    public ProductExecution(ProductStateEnum stateEnum, Product product) {
         this.state = stateEnum.getState();
         this.product = product;
     }
 
-    public ProductExecution(ProductStateEnum stateEnum, Product product, List<Product> productList){
+    public ProductExecution(ProductStateEnum stateEnum, Product product, List<Product> productList) {
         this.state = stateEnum.getState();
         this.product = product;
         this.productList = productList;

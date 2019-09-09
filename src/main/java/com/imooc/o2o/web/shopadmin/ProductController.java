@@ -42,6 +42,47 @@ public class ProductController {
         this.productCategoryService = productCategoryService;
     }
 
+    @RequestMapping(value = "getproductlistbyshop", method = RequestMethod.GET)
+    @ResponseBody
+    private Map<String, Object> getProductListByShop(HttpServletRequest request) {
+        Map<String, Object> modelMap = new HashMap<>();
+        int pageIndex = HttpServletRequestUtil.getInt(request, "pageIndex");
+        int pageSize = HttpServletRequestUtil.getInt(request, "pageSize");
+
+        Shop currentShop = (Shop) request.getSession().getAttribute("currentShop");
+        if ((pageSize > -1) && (pageIndex > -1) && currentShop != null && currentShop.getShopId() != null) {
+            long proudctCategoryId = HttpServletRequestUtil.getLong(request, "productCategoryId");
+            String productName = HttpServletRequestUtil.getString(request, "proudctName");
+            Product productCondition = compactProductCondition(currentShop.getShopId(), proudctCategoryId, productName);
+
+            ProductExecution pe = productService.getProductList(productCondition, pageIndex, pageSize);
+            modelMap.put("productList", pe.getProductList());
+            modelMap.put("count", pe.getCount());
+            modelMap.put("success", true);
+        } else {
+            modelMap.put("success", false);
+            modelMap.put("errMsg", "empty pageSzie or pageIndex or shopId");
+
+        }
+        return modelMap;
+    }
+
+    private Product compactProductCondition(Long shopId, long proudctCategoryId, String productName) {
+        Product product = new Product();
+        Shop shop = new Shop();
+        shop.setShopId(shopId);
+        product.setShop(shop);
+        if (proudctCategoryId != -1L) {
+            ProductCategory productCategory = new ProductCategory();
+            productCategory.setProductCategoryId(proudctCategoryId);
+            product.setProductCategory(productCategory);
+        }
+        if (productName != null) {
+            product.setProductName(productName);
+        }
+        return product;
+    }
+
     @RequestMapping(value = "/addproduct", method = {RequestMethod.POST})
     @ResponseBody
     public Map<String, Object> addProduct(HttpServletRequest request) {
